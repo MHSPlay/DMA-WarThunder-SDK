@@ -19,6 +19,15 @@ namespace esp
 			if ( !g_render->world_to_screen( unitPosition, screenPosition, matrix ) )
 				continue;
 
+            uintptr_t local = TargetProcess->Read< uintptr_t >( baseAddr + offsets::localplayer_offset );
+            uintptr_t localUnit = TargetProcess->Read< uintptr_t >( local + offsets::localplayer::localunit_offset ) - 1;
+            vec3_t localPosition = TargetProcess->Read< vec3_t >( localUnit + 0xAE8 );
+
+            // return correctly. 225.0F = 225m = 0.22km 
+            int distance = localPosition.dist_to( unitPosition );
+            if ( distance >= 1400 )
+                continue;
+
 			// 3d box
             {
                 vec3_t bbmin = TargetProcess->Read< vec3_t >( unit + offsets::unit_offsets::bbmin_offset );
@@ -49,7 +58,7 @@ namespace esp
 
                 if ( canDraw )
                 {
-                    ImU32 color = ImGui::ColorConvertFloat4ToU32( ImVec4( 1.0f, 0.0f, 0.0f, 1.0f ) );
+                    ImU32 color = IM_COL32( 255, 0, 0, 255 );
                     float thickness = 1.0f;
 
                     g_render->line( screenCorners[ 0 ].x, screenCorners[ 0 ].y, screenCorners[ 1 ].x, screenCorners[ 1 ].y, color, thickness);
@@ -75,8 +84,8 @@ namespace esp
                 float centerX = GetSystemMetrics( SM_CXSCREEN ) / 2.0f;
                 float centerY = GetSystemMetrics( SM_CYSCREEN ) / 2.0f;
 
-                ImU32 color = ImGui::ColorConvertFloat4ToU32( ImVec4( 0.0f, 1.0f, 0.0f, 1.0f ) );
-                ImU32 outline = ImGui::ColorConvertFloat4ToU32( ImVec4( 0.0f, 0.0f, 0.0f, 1.0f ) );
+                ImU32 color = IM_COL32( 0, 255, 0, 255 );
+                ImU32 outline = IM_COL32( 0, 0, 0, 255 );
 
                 int size = 10;
                 int gap = 1;
