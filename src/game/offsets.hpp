@@ -2,8 +2,8 @@
 
 namespace offsets
 {
-	constexpr uintptr_t cgame_offset = 0x6480a60;
-	constexpr uintptr_t localplayer_offset = 0x6468fb0;
+	constexpr uintptr_t cgame_offset = 0x647fa60;
+	constexpr uintptr_t localplayer_offset = 0x6467fb0;
 	constexpr uintptr_t viewMatrix = 0x63b7080;
 
 	namespace cgame_offsets
