@@ -2,8 +2,6 @@
 
 This repository contains an SDK for interacting with War Thunder using Direct Memory Access (DMA).
 
-Based on own [DMA-SDK](https://github.com/MHSPlay/DMA-SDK)
-
 ## Features and Functionality
 
 *   **ImGui Integration:** [Dear ImGui](https://github.com/ocornut/imgui) for creating overlays and user interfaces.
