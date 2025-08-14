@@ -4,6 +4,10 @@ This repository contains an SDK for interacting with War Thunder using Direct Me
 
 [unknowncheats.me](https://www.unknowncheats.me/forum/other-mmorpg-and-strategy/713460-warthunder-dma.html)
 
+![GitHub Stars](https://img.shields.io/github/stars/MHSPlay/DMA-WarThunder-SDK?style=for-the-badge&logo=github)
+![GitHub Forks](https://img.shields.io/github/forks/MHSPlay/DMA-WarThunder-SDK?style=for-the-badge&logo=github)
+![GitHub Last Commit](https://img.shields.io/github/last-commit/MHSPlay/DMA-WarThunder-SDK?style=for-the-badge&logo=git)
+
 ## Features and Functionality
 
 *   **ImGui Integration:** [Dear ImGui](https://github.com/ocornut/imgui) for creating overlays and user interfaces.
