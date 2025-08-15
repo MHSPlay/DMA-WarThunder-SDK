@@ -29,6 +29,7 @@ namespace esp
                 continue;
 
 			// 3d box
+            float boxBottomY = 0.0f;
             {
                 vec3_t bbmin = TargetProcess->Read< vec3_t >( unit + offsets::unit_offsets::bbmin_offset );
                 vec3_t bbmax = TargetProcess->Read< vec3_t >( unit + offsets::unit_offsets::bbmax_offset );
@@ -75,7 +76,28 @@ namespace esp
                     g_render->line( screenCorners[ 1 ].x, screenCorners[ 1 ].y, screenCorners[ 5 ].x, screenCorners[ 5 ].y, color, thickness);
                     g_render->line( screenCorners[ 2 ].x, screenCorners[ 2 ].y, screenCorners[ 6 ].x, screenCorners[ 6 ].y, color, thickness);
                     g_render->line( screenCorners[ 3 ].x, screenCorners[ 3 ].y, screenCorners[ 7 ].x, screenCorners[ 7 ].y, color, thickness);
+
+                    boxBottomY = screenCorners[ 0 ].y;
+                    for ( int i = 1; i < 8; i++ )
+                    {
+                        if ( screenCorners[ i ].y > boxBottomY )
+                            boxBottomY = screenCorners[ i ].y;
+                    }
+
                 }
+
+            }
+
+            // distance
+            if ( boxBottomY > 0.0f )
+            {
+                char distanceText[ 32 ];
+                sprintf_s( distanceText, "%dm", distance );
+
+                float textX = screenPosition.x;
+                float textY = boxBottomY + 5.0f;
+
+                g_render->text( vec2_t( textX, textY ), IM_COL32( 255, 255, 255, 255 ), outline, distanceText, g_render->fonts( ).m_esp );
             }
 
             // cross
@@ -105,6 +127,9 @@ namespace esp
             }
 
 		}
+
+        // aimbot
+        aimbot::Think( );
 
 	}
 

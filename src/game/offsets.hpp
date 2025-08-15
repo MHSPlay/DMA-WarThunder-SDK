@@ -17,11 +17,18 @@ namespace offsets
 		}
 		namespace ballistic_offsets
 		{
-			//constexpr uintptr_t bomb_prediction_offset = 0x0; // FAILED TO GRAB
-			constexpr uintptr_t round_caliber_offset = 0x1774;
-			constexpr uintptr_t round_length_offset = 0x1f24;
-			constexpr uintptr_t round_mass_offset = 0x1f1c;
-			constexpr uintptr_t round_velocity_offset = 0x1f10;
+			constexpr uintptr_t selected_unit_ptr = 0x690;//Ballistics + 0x668
+			constexpr uintptr_t weapon_position_two = 0x1EE0 + 0x20;//Ballistics + 0x1EE0 + 0x20
+			constexpr uintptr_t velocity = 0x1F10;//Ballistics + 0x1F10
+			constexpr uintptr_t mass = 0x1F1C;//Ballistics + 0x1F1C
+			constexpr uintptr_t caliber = 0x1F20;//Ballistics + 0x1F20
+			constexpr uintptr_t length = 0x1F24;//Ballistics + 0x1F24
+			constexpr uintptr_t max_dist = 0x1F28;//Ballistics + 0x1F28
+			constexpr uintptr_t bomb_impact_point = 0x1AEC + 0x20;//Ballistics + 0x1AEC + 0x20
+			constexpr uintptr_t bullet_impact_point = 0x22C8 + 0x20;//Ballistics + 0x22C8 + 0x20
+			constexpr uintptr_t ingame_ballistics = 0x2328;//Ballistics + 0x2320 + 0x20
+			constexpr uintptr_t weapon_position = 0x1F00;//Ballistics + 0x1F00
+
 			constexpr uintptr_t telecontrol_offset = 0xc68;
 			namespace telecontrol_offsets
 			{
