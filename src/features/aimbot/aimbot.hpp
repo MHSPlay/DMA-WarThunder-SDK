@@ -157,8 +157,9 @@ namespace aimbot
 
             GetBallisticsInfo( );
 
-            vec3_t targetVelocity = vec3_t( 0, 0, 0 );
-            vec3_t targetVelocity = TargetProcess->Read< vec3_t >( unit + offsets::unit_offsets::groundmovement_offset );
+            //vec3_t targetVelocity = vec3_t( 0, 0, 0 );
+            uintptr_t targetGroundMove = TargetProcess->Read< uintptr_t >( unit + offsets::unit_offsets::groundmovement_offset );
+            vec3_t targetVelocity = TargetProcess->Read< vec3_t >( targetGroundMove + offsets::unit_offsets::ground_velocity_offset );
 
             double dist2D = localPosition.dist_to(unitPosition);
             double deltaZ = unitPosition.z - localPosition.z;

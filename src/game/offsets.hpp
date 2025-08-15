@@ -99,6 +99,8 @@ namespace offsets
 
 	namespace unit_offsets
 	{
+
+		constexpr uintptr_t ground_velocity_offset = 0x54;
 		constexpr uintptr_t airmovement_offset = 0x10;
 		constexpr uintptr_t allowBailout_offset = 0xa80;
 		constexpr uintptr_t bbmax_offset = 0x22c;
