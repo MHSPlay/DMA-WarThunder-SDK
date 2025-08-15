@@ -49,6 +49,10 @@ namespace misc
 				continue;
 
 			uint8_t unitTeam = TargetProcess->Read< uint8_t >( unitAddr + offsets::unit_offsets::unitArmyNo_offset );
+
+			if (unitTeam == 0) // Invalid unit check?
+				continue; // Fixes #3 git issue
+
 			if ( unitTeam == localTeam )
 				continue;
 
