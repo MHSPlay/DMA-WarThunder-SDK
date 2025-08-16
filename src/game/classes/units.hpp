@@ -21,9 +21,14 @@ public:
 		return TargetProcess->Read< vec3_t >( this->base_address + 0x0220 );
 	}
 
-	auto getMovement( ) -> c_movement_ground {
+	auto get_movement_ground( ) -> c_movement_ground {
 		uintptr_t addr = TargetProcess->Read< uintptr_t >( this->base_address + offsets::unit_offsets::groundmovement_offset );
 		return c_movement_ground( addr );
+	}
+
+	auto get_movement_air( ) -> c_movement_air {
+		uintptr_t addr = TargetProcess->Read< uintptr_t >( this->base_address + offsets::unit_offsets::airmovement_offset );
+		return c_movement_air( addr );
 	}
 
 	auto getPosition( ) -> vec3_t {
@@ -40,6 +45,10 @@ public:
 
 	auto getTeam( ) -> uint8_t {
 		return TargetProcess->Read< uint8_t >( this->base_address + 0x0DB0 ); // unitArmyNo
+	}
+
+	auto getReloadTime( ) -> uint8_t {
+		return TargetProcess->Read< uint8_t >( this->base_address + offsets::unit_offsets::visualReloadProgress_offset );
 	}
 
 private:

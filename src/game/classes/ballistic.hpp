@@ -21,6 +21,14 @@ public:
 		return TargetProcess->Read< float >( this->base_address + offsets::cgame_offsets::ballistic_offsets::caliber );
 	}
 	
+	auto getLength( ) -> float {
+		return TargetProcess->Read< float >( this->base_address + offsets::cgame_offsets::ballistic_offsets::length );
+	}
+
+	auto getMaxDistance( ) -> float {
+		return TargetProcess->Read< float >( this->base_address + offsets::cgame_offsets::ballistic_offsets::max_dist );
+	}
+
 private:
 	uintptr_t base_address;
 };

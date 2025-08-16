@@ -11,8 +11,6 @@ public:
 
 	auto getCameraMatrix( ) -> ViewMatrix_t {
 
-		//return TargetProcess->Read< ViewMatrix_t >( this->base_address + offsets::cgame_offsets::camera_offsets::camera_matrix_offset );
-
 		VMMDLL_SCATTER_HANDLE hScatter = TargetProcess->CreateScatterHandle( );
 		if ( !hScatter )
 			return ViewMatrix_t( );

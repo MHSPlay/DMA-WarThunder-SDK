@@ -236,6 +236,14 @@ public:
 		return len;
 	}
 
+	__forceinline vec3_t normalize( ) const {
+		float len = length( );
+		if ( len == 0 ) 
+			return vec3_t( 0, 0, 0 );
+
+		return vec3_t( x / len, y / len, z / len );
+	}
+
 	__forceinline vec3_t normalized( ) const {
 		auto vec = *this;
 

@@ -135,7 +135,7 @@ int main( int, char** )
             GUI::OnRender( );
         }
 
-        esp::Think( );
+        esp::run( );
 
         // Rendering
         ImGui::Render( );

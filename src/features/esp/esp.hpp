@@ -59,8 +59,9 @@ namespace esp
         g_render->line(centerX, centerY + gap, centerX, centerY + size, color, thickness);
     }
 
-	inline auto Think( ) -> void 
+	inline auto run( ) -> void 
 	{
+        // once
         const auto camera_matrix = sdk::cGame->camera->getCameraMatrix( );
 
         draw_crosshair( );
@@ -97,13 +98,18 @@ namespace esp
             }
 
             float box_bottom_y = 0.0f;
+            float box_right_x = 0.0f;
             if ( all_corners_visible ) 
             {
                 draw_wireframe_box( screen_corners, IM_COL32( 255, 0, 0, 255 ), 1.0f);
 
                 box_bottom_y = screen_corners[ 0 ].y;
+                box_right_x = screen_corners[0].x;
                 for ( size_t i = 1; i < screen_corners.size( ); ++i ) 
+                {
                     box_bottom_y = max( box_bottom_y, screen_corners[ i ].y );
+                    box_right_x = max( box_right_x, screen_corners[ i ].x );
+                }
 
             }
 
@@ -119,12 +125,23 @@ namespace esp
                 };
 
                 g_render->text( text_position, IM_COL32( 255, 255, 255, 255 ), 0, distance_text, g_render->fonts( ).m_esp );
+
+                const uint8_t reload_time = unit.getReloadTime( );
+                char reload_text[ 16 ];
+                snprintf( reload_text, sizeof( reload_text ), "%.1fs", static_cast< int >( reload_time ) );
+
+                const vec2_t reload_pos = {
+                    screen_position.x,
+                    box_bottom_y + 20.0f
+                };
+            
+                g_render->text( reload_pos, IM_COL32( 0, 200, 255, 255 ), 0, reload_text, g_render->fonts( ).m_esp );
             }
 
 		}
 
         // aimbot
-        aimbot::Think( );
+        aimbot::run( camera_matrix );
 
 	}
 
