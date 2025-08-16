@@ -743,51 +743,78 @@ void c_memory::CloseScatterHandle(VMMDLL_SCATTER_HANDLE handle)
 	VMMDLL_Scatter_CloseHandle(handle);
 }
 
-void c_memory::AddScatterReadRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size)
+bool c_memory::ClearScatterHandle(VMMDLL_SCATTER_HANDLE handle)
+{
+	if (!VMMDLL_Scatter_Clear(handle, this->current_process.PID, VMMDLL_FLAG_NOCACHE))
+	{
+		LOG("[-] Failed to clear Scatter\n");
+		return false;
+	}
+ 
+	return true;
+}
+
+bool c_memory::AddScatterReadRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size)
 {
 	DWORD memoryPrepared = NULL;
 	if (!VMMDLL_Scatter_PrepareEx(handle, address, size, (PBYTE)buffer, &memoryPrepared))
 	{
-	//	LOG("[!] Failed to prepare scatter read at 0x%p\n", address);
+		//	LOG("[!] Failed to prepare scatter read at 0x%p\n", address);
+		return false;
 	}
+	return true;
 }
 
-void c_memory::AddScatterWriteRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size)
+bool c_memory::AddScatterWriteRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size)
 {
-		if (!(address > 0x2000000 && address < 0x7FFFFFFFFFFF))
-		return;
+	if (!(address > 0x2000000 && address < 0x7FFFFFFFFFFF))
+		return false;
+
 	if (!VMMDLL_Scatter_PrepareWrite(handle, address, (PBYTE)buffer, size))
 	{
 		//LOG("[!] Failed to prepare scatter write at 0x%p\n", address);
+		return false;
 	}
+
+	return true;
 }
-void c_memory::ExecuteScatterWrite(VMMDLL_SCATTER_HANDLE handle)
+
+bool c_memory::ExecuteScatterWrite(VMMDLL_SCATTER_HANDLE handle, bool bClear)
 {
 
 	if (!VMMDLL_Scatter_Execute(handle))
 	{
-	//	LOG("[-] Failed to Execute Scatter Read\n");
+		//	LOG("[-] Failed to Execute Scatter Read\n");
+		return false;
 	}
 	//Clear after using it
-	if (!VMMDLL_Scatter_Clear(handle, this->current_process.PID, VMMDLL_FLAG_NOCACHE))
+	if (bClear && !VMMDLL_Scatter_Clear(handle, this->current_process.PID, VMMDLL_FLAG_NOCACHE))
 	{
-	//	LOG("[-] Failed to clear Scatter\n");
+		//	LOG("[-] Failed to clear Scatter\n");
+		return false;
 	}
+
+	return true;
 }
-void c_memory::ExecuteScatterRead(VMMDLL_SCATTER_HANDLE handle)
+
+bool c_memory::ExecuteScatterRead(VMMDLL_SCATTER_HANDLE handle, bool bClear)
 {
 
 	if (!VMMDLL_Scatter_ExecuteRead(handle))
 	{
 		LOG("[-] Failed to Execute Scatter Read\n");
+		return false;
 	}
 	//Clear after using it
-	if (!VMMDLL_Scatter_Clear(handle, this->current_process.PID, VMMDLL_FLAG_NOCACHE))
+	if (bClear && !VMMDLL_Scatter_Clear(handle, this->current_process.PID, VMMDLL_FLAG_NOCACHE))
 	{
 		LOG("[-] Failed to clear Scatter\n");
+		return false;
 	}
+	return true;
 }
-void c_memory::ExecuteReadScatter(VMMDLL_SCATTER_HANDLE handle, int pid)
+
+bool c_memory::ExecuteReadScatter(VMMDLL_SCATTER_HANDLE handle, int pid, bool bClear)
 {
 	if (pid == 0)
 		pid = this->current_process.PID;
@@ -795,15 +822,19 @@ void c_memory::ExecuteReadScatter(VMMDLL_SCATTER_HANDLE handle, int pid)
 	if (!VMMDLL_Scatter_ExecuteRead(handle))
 	{
 		LOG("[-] Failed to Execute Scatter Read\n");
+		return false;
 	}
 	//Clear after using it
-	if (!VMMDLL_Scatter_Clear(handle, pid, VMMDLL_FLAG_NOCACHE))
+	if (bClear && !VMMDLL_Scatter_Clear(handle, pid, VMMDLL_FLAG_NOCACHE))
 	{
 		LOG("[-] Failed to clear Scatter\n");
+		return false;
 	}
+
+	return true;
 }
 
-void c_memory::ExecuteWriteScatter(VMMDLL_SCATTER_HANDLE handle, int pid)
+bool c_memory::ExecuteWriteScatter(VMMDLL_SCATTER_HANDLE handle, int pid, bool bClear)
 {
 	if (pid == 0)
 		pid = this->current_process.PID;
@@ -811,10 +842,14 @@ void c_memory::ExecuteWriteScatter(VMMDLL_SCATTER_HANDLE handle, int pid)
 	if (!VMMDLL_Scatter_Execute(handle))
 	{
 		LOG("[-] Failed to Execute Scatter Read\n");
+		return false;
 	}
 	//Clear after using it
-	if (!VMMDLL_Scatter_Clear(handle, pid, VMMDLL_FLAG_NOCACHE))
+	if (bClear && !VMMDLL_Scatter_Clear(handle, pid, VMMDLL_FLAG_NOCACHE))
 	{
 		LOG("[-] Failed to clear Scatter\n");
+		return false;
 	}
+
+	return true;
 }

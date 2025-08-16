@@ -16,17 +16,9 @@ namespace aimbot
 
     inline auto GetBallisticsInfo( ) -> void
     {
-        uintptr_t cGame = TargetProcess->Read< uintptr_t >( baseAddr + offsets::cgame_offset );
-        if ( !cGame )
-            return;
-
-        uintptr_t ballistics = TargetProcess->Read< uintptr_t >( cGame + offsets::cgame_offsets::ballistics_offset );
-        if ( !ballistics )
-            return;
-
-        ballisticsData.mass = TargetProcess->Read< float >( ballistics + offsets::cgame_offsets::ballistic_offsets::mass );
-        ballisticsData.caliber = TargetProcess->Read< float >( ballistics + offsets::cgame_offsets::ballistic_offsets::caliber );
-        ballisticsData.velocity = TargetProcess->Read< float >( ballistics + offsets::cgame_offsets::ballistic_offsets::velocity );
+        ballisticsData.mass = sdk::cGame->ballistics->getMass( );
+        ballisticsData.caliber = sdk::cGame->ballistics->getCaliber( );
+        ballisticsData.velocity = sdk::cGame->ballistics->getVelocity( );
     }
 
     inline float GetDragConstant(float altitude)
@@ -127,76 +119,71 @@ namespace aimbot
 
     inline auto Think() -> void
     {
-        uintptr_t cGame = TargetProcess->Read< uintptr_t >( baseAddr + offsets::cgame_offset );
-        uintptr_t cCamera = TargetProcess->Read< uintptr_t >( cGame + offsets::cgame_offsets::camera_offset );
-        ViewMatrix_t matrix = TargetProcess->Read< ViewMatrix_t >( cCamera + offsets::cgame_offsets::camera_offsets::camera_matrix_offset );
+        const auto camera_matrix = sdk::cGame->camera->getCameraMatrix( );
 
-		for ( uintptr_t unit : misc::units )
+        std::vector< c_unit > units = misc::unitsList;
+		for ( c_unit& unit : units )
 		{
-            vec3_t unitPosition = TargetProcess->Read< vec3_t >( unit + 0xAE8 );
+            vec3_t unitPosition = unit.getPosition( );
 			if ( unitPosition.empty( ) )
 				continue;
 
-            uintptr_t local = TargetProcess->Read< uintptr_t >( baseAddr + offsets::localplayer_offset );
-            uintptr_t localUnit = TargetProcess->Read< uintptr_t >( local + offsets::localplayer::localunit_offset ) - 1;
-            vec3_t localPosition = TargetProcess->Read< vec3_t >( localUnit + 0xAE8 );
+            vec3_t localPosition = sdk::cLocalPlayer->getLocalUnit( ).getPosition( );
 
             float horizontalDist = std::sqrt(
-                (unitPosition.x - localPosition.x) * (unitPosition.x - localPosition.x) +
-                (unitPosition.z - localPosition.z) * (unitPosition.z - localPosition.z)
+                ( unitPosition.x - localPosition.x ) * ( unitPosition.x - localPosition.x ) +
+                ( unitPosition.z - localPosition.z ) * ( unitPosition.z - localPosition.z )
             );
 
             float distanceFactor = horizontalDist / 150.0f;
-            float extraOffset = distanceFactor * 0.14f;
+            float extraOffset = distanceFactor * 0.1425f;
 
             unitPosition.y += 1.0f + extraOffset;
 
             int distance = localPosition.dist_to( unitPosition );
-            if ( distance <= 200 || distance >= 1400 )
+            if ( distance >= 1400 )
                 continue;
 
             GetBallisticsInfo( );
 
-            //vec3_t targetVelocity = vec3_t( 0, 0, 0 );
-            uintptr_t targetGroundMove = TargetProcess->Read< uintptr_t >( unit + offsets::unit_offsets::groundmovement_offset );
-            vec3_t targetVelocity = TargetProcess->Read< vec3_t >( targetGroundMove + offsets::unit_offsets::ground_velocity_offset );
+            vec3_t targetVelocity = unit.getMovement( ).velocity( );
 
-            double dist2D = localPosition.dist_to(unitPosition);
+            double dist2D = localPosition.dist_to( unitPosition );
             double deltaZ = unitPosition.z - localPosition.z;
 
-            double t = SolveTime(dist2D, deltaZ, ballisticsData.velocity, localPosition.y);
-            if (t <= 0)
+            double t = SolveTime( dist2D, deltaZ, ballisticsData.velocity, localPosition.y );
+            if ( t <= 0 )
                 continue;
 
             vec3_t predictedPos = unitPosition;
-            for (int i = 0; i < 3; ++i)
+            for ( int i = 0; i < 3; ++i )
             {
                 predictedPos = unitPosition + targetVelocity * t;
-                dist2D = localPosition.dist_to(predictedPos);
+                dist2D = localPosition.dist_to( predictedPos );
                 deltaZ = predictedPos.z - localPosition.z;
 
-                double newT = SolveTime(dist2D, deltaZ, ballisticsData.velocity, localPosition.y);
-                if (newT <= 0)
+                double newT = SolveTime( dist2D, deltaZ, ballisticsData.velocity, localPosition.y );
+                if ( newT <= 0 )
                     break;
 
                 t = newT;
             }
 
-            double verticalDrop = CalculateVerticalDrop(t, ballisticsData.velocity, localPosition, predictedPos);
+            double verticalDrop = CalculateVerticalDrop( t, ballisticsData.velocity, localPosition, predictedPos );
 
             vec3_t aimPoint = predictedPos;
             aimPoint.y += verticalDrop;
 
             vec2_t screen;
-            if ( !g_render->world_to_screen( aimPoint, screen, matrix ) )
+            if ( !g_render->world_to_screen( aimPoint, screen, camera_matrix ) )
                 continue;
 
             g_render->rect( screen.x - 2, screen.y - 2, 4, 4, IM_COL32( 255, 255, 0, 150 ), 4.0f );
 
             vec2_t unitScreen;
-            if (g_render->world_to_screen(unitPosition, unitScreen, matrix)) {
-                g_render->line(unitScreen.x, unitScreen.y, screen.x, screen.y, IM_COL32(255, 0, 0, 200), 2.0f);
-            }
+            if ( g_render->world_to_screen( unitPosition, unitScreen, camera_matrix ) )
+                g_render->line( unitScreen.x, unitScreen.y, screen.x, screen.y, IM_COL32( 255, 0, 0, 200 ), 2.0f );
+            
         }
     }
 }

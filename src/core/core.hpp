@@ -6,14 +6,20 @@ namespace core
 	inline auto Thread( ) 
 	{
 
-        if ( !TargetProcess->Init( processName ) )
+        if ( !TargetProcess->Init( "aces.exe" ) )
         {
             LOG( "Failed to initialize process.\n" );
             return FALSE;
         }
 
-        baseAddr = TargetProcess->GetBaseAddress( processName );
-        baseSize = TargetProcess->GetBaseSize( processName );
+        baseAddr = TargetProcess->GetBaseAddress( "aces.exe" );
+        baseSize = TargetProcess->GetBaseSize( "aces.exe" );
+
+        if ( !sdk::init( ) )
+        {
+            LOG( "Failed to initialize sdk.\n" );
+            return FALSE;
+        }
 
 		std::thread( [ & ]( ) 
         {

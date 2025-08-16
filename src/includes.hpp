@@ -26,6 +26,9 @@
 #define LOG( fmt, ... ) std::printf( fmt, ##__VA_ARGS__ )
 #define LOGW( fmt, ... ) std::wprintf( fmt, ##__VA_ARGS__ )
 
+inline uint64_t baseAddr = 0x0;
+inline uint64_t baseSize = 0x0;
+
 // imgui includes.
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "..\lib\imgui\imgui.h"

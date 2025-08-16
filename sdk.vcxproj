@@ -154,6 +154,12 @@
     <ClInclude Include="src\features\aimbot\aimbot.hpp" />
     <ClInclude Include="src\features\esp\esp.hpp" />
     <ClInclude Include="src\features\misc\misc.hpp" />
+    <ClInclude Include="src\game\classes\ballistic.hpp" />
+    <ClInclude Include="src\game\classes\camera.hpp" />
+    <ClInclude Include="src\game\classes\entity.hpp" />
+    <ClInclude Include="src\game\classes\game.hpp" />
+    <ClInclude Include="src\game\classes\movement.hpp" />
+    <ClInclude Include="src\game\classes\units.hpp" />
     <ClInclude Include="src\game\datatypes\matrix.hpp" />
     <ClInclude Include="src\gui\menu.hpp" />
     <ClInclude Include="src\memory\memory.h" />

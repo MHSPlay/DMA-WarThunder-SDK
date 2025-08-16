@@ -248,6 +248,7 @@ public:
 	 * \param handle
 	 */
 	void CloseScatterHandle(VMMDLL_SCATTER_HANDLE handle);
+	bool ClearScatterHandle(VMMDLL_SCATTER_HANDLE handle);
 
 	/**
 	 * \brief Adds a scatter read/write request to the handle
@@ -256,8 +257,8 @@ public:
 	 * \param buffer the buffer to read/write to
 	 * \param size the size of buffer
 	 */
-	void AddScatterReadRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size);
-	void AddScatterWriteRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size);
+	bool AddScatterReadRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size);
+	bool AddScatterWriteRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t address, void* buffer, size_t size);
 	template <typename T>
 	bool AddScatterWriteRequest(VMMDLL_SCATTER_HANDLE handle, uint64_t addr, T value) const
 	{
@@ -275,10 +276,10 @@ public:
 	 * \param handle
 	 * \param pid
 	 */
-	void ExecuteReadScatter(VMMDLL_SCATTER_HANDLE handle, int pid = 0);
-	void ExecuteWriteScatter(VMMDLL_SCATTER_HANDLE handle, int pid = 0);
-	void ExecuteScatterRead(VMMDLL_SCATTER_HANDLE handle);
-	void ExecuteScatterWrite(VMMDLL_SCATTER_HANDLE handle);
+	bool ExecuteReadScatter(VMMDLL_SCATTER_HANDLE handle, int pid = 0, bool bClear = false);
+	bool ExecuteWriteScatter(VMMDLL_SCATTER_HANDLE handle, int pid = 0, bool bClear = false);
+	bool ExecuteScatterRead(VMMDLL_SCATTER_HANDLE handle, bool bClear);
+	bool ExecuteScatterWrite(VMMDLL_SCATTER_HANDLE handle, bool bClear);
 
 	/*the FPGA handle*/
 	VMM_HANDLE vHandle;

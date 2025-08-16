@@ -2,64 +2,65 @@
 
 namespace misc
 {
-	inline std::vector< uintptr_t > units;
+	constexpr size_t INITIAL_UNITS_CAPACITY = 64;
+	inline std::vector< c_unit > unitsList;
+
+	inline auto is_valid_enemy( c_unit unit ) -> bool
+	{
+		//if ( !unit_ptr || unit_ptr == sdk::cLocalPlayer->localUnit )
+		//	return false;
+		
+		if ( unit.getUnitState( ) >= 2 ) 
+			return false;
+		
+		const uint8_t unit_team = unit.getTeam( );
+		if ( unit_team == 0 || unit_team == sdk::cLocalPlayer->getLocalUnit( ).getTeam( ) )
+			return false;
+		
+		return true;
+	}
 
 	inline auto UpdateEntityList( ) -> void 
 	{
-		uintptr_t local = TargetProcess->Read< uintptr_t >( baseAddr + offsets::localplayer_offset );
-		uintptr_t cGame = TargetProcess->Read< uintptr_t >( baseAddr + offsets::cgame_offset );
-		if ( !local || !cGame )
-		{
-			LOG( "offsets outdated...\n" );
-			return;
-		}
+		std::vector< c_unit > temp_units;
 
-		uint8_t localGuiState = TargetProcess->Read< uint8_t >( local + offsets::localplayer::guiState_offset );
-		if ( localGuiState != 2 && localGuiState != 6 )
+		VMMDLL_SCATTER_HANDLE hScatter = TargetProcess->CreateScatterHandle( );
+		if ( !hScatter )
 			return;
 
-		uintptr_t localUnit = TargetProcess->Read< uintptr_t >( local + offsets::localplayer::localunit_offset ) - 1;
-		uintptr_t unitList3 = TargetProcess->Read< uintptr_t >( cGame + 0x340 );
-		uint16_t unitCount3 = TargetProcess->Read< uint16_t >( cGame + 0x350 );
+		if ( sdk::cLocalPlayer->getGuiState( ) != GuiState::ALIVE && sdk::cLocalPlayer->getGuiState( ) != GuiState::SPEC )
+			return;
 
-		uint8_t localTeam = TargetProcess->Read< uint8_t >( localUnit + offsets::unit_offsets::unitArmyNo_offset );
-
-		units.clear( );
-		for ( int i = 0; i < static_cast< int >( unitCount3 ); ++i )
+		const int unit_count = sdk::cGame->getUnitCount( );
+		const uintptr_t unit_list_base = sdk::cGame->getUnitList( );
+		auto scatter_unit = [ & ]( VMMDLL_SCATTER_HANDLE handle, uint32_t count ) -> std::vector< c_unit >
 		{
-			uintptr_t unitAddr = TargetProcess->Read< uintptr_t >( unitList3 + ( i * sizeof( uintptr_t ) ) );
+			std::vector< std::uintptr_t > pointers( count );
+			std::vector< c_unit > result;
+			result.reserve( count );
 
-			if ( !unitAddr )
-				continue;
+			for (size_t i = 0; i < count; i++)
+				TargetProcess->AddScatterReadRequest( handle, unit_list_base + 0x8 * i, &pointers[ i ], sizeof( std::uintptr_t ) );
+			
+			TargetProcess->ExecuteReadScatter( handle );
 
-			if ( unitAddr == localUnit )
-				continue;
+			for ( size_t i = 0; i < count; i++ )
+				result.emplace_back( c_unit( pointers.at( i ) ) );
 
-			auto IsAlive = [ & ]( ) -> bool
-			{
-				uint16_t unitState = TargetProcess->Read< uint16_t >( unitAddr + offsets::unit_offsets::unitState_offset );
+			TargetProcess->CloseScatterHandle( hScatter );
+			return result;
+		};
 
-				if ( unitState >= 2 )
-					return false;
-
-				return true;
-			};
-
-			if ( !IsAlive( ) )
-				continue;
-
-			uint8_t unitTeam = TargetProcess->Read< uint8_t >( unitAddr + offsets::unit_offsets::unitArmyNo_offset );
-
-			// Fixes #3 git issue by GamebP
-			if ( unitTeam == 0 )
-				continue;
-
-			if ( unitTeam == localTeam )
-				continue;
-
-			units.push_back( unitAddr );
+		std::vector< c_unit > units = scatter_unit( hScatter, unit_count );
+		for ( c_unit unit : units ) 
+		{
+			if ( is_valid_enemy( unit ) )
+				temp_units.emplace_back( unit );
 
 		}
+
+		unitsList = temp_units;
+		temp_units.clear( );
 
 	}
 
