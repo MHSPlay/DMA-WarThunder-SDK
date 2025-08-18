@@ -214,6 +214,18 @@ public:
 		return Read<T>(reinterpret_cast<void*>(address));
 	}
 
+	std::string ReadString( uint64_t address, size_t size = 256 )
+	{
+		if ( !address || size > 4096 )
+			return "";
+
+		char string[ 4096 ] = { 0 };
+		if ( !Read( address, string, size ) )
+			return "";
+
+		return std::string( string );
+	}
+
 	/**
 	* brief Reads memory from the process using a template and pid
 	* @param address The address to read from

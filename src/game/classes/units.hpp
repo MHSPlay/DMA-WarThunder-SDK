@@ -4,6 +4,12 @@ class c_movement_ground;
 
 class c_unit {
 public:
+	enum UnitState : std::uint8_t {
+		ALIVE = 0,
+		DEAD = 2,
+	};
+
+public:
 
 	auto get_base( ) -> uintptr_t {
 		return this->base_address;
@@ -35,6 +41,11 @@ public:
 		return TargetProcess->Read< vec3_t >( this->base_address + 0xAE8 );
 	}
 
+	auto getInfo( ) -> c_info {
+		uintptr_t addr = TargetProcess->Read< uintptr_t >( this->base_address + offsets::unit_offsets::info_offset );
+		return c_info( addr );
+	}
+
 	auto getInvulnerable( ) -> uintptr_t {
 		return TargetProcess->Read< uintptr_t >( this->base_address + 0x0C40 );
 	}
@@ -53,5 +64,4 @@ public:
 
 private:
 	uintptr_t base_address;
-
 };

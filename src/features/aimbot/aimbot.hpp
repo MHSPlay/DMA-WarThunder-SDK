@@ -10,6 +10,8 @@ namespace aimbot
         float caliber = 0.0f;
         float velocity = 0.0f;
         float length = 0.0f;
+
+        float max_dist = 0.0f;
     };
 
     inline BallisticsData ballisticsData;
@@ -20,6 +22,7 @@ namespace aimbot
         ballisticsData.caliber = sdk::cGame->ballistics->getCaliber();
         ballisticsData.velocity = sdk::cGame->ballistics->getVelocity();
         ballisticsData.length = sdk::cGame->ballistics->getLength();
+        ballisticsData.max_dist = sdk::cGame->ballistics->getMaxDistance();
     }
 
     class BallisticsPrediction {
@@ -157,8 +160,8 @@ namespace aimbot
                     }
 
                     // idk maybe this is trash
-                    /*float drop = 0.5f * std::abs(GRAVITY) * hitTime * hitTime;
-                    newPrediction.y += drop;*/
+                    float drop = 0.5f * std::abs(GRAVITY) * hitTime * hitTime;
+                    newPrediction.y += drop;
 
                     predictedTargetPos = newPrediction;
                 }
@@ -255,58 +258,43 @@ namespace aimbot
         }
     };
 
-    inline auto run( ViewMatrix_t camera_matrix ) -> void
-    {
+    inline auto run( c_unit& unit, vec3_t unit_position, vec3_t local_position, ViewMatrix_t camera_matrix ) -> void {
         static BallisticsPrediction pred;
 
-        std::vector< c_unit > units = misc::unitsList;
-		for ( c_unit& unit : units )
-		{
-            vec3_t unitPosition = unit.getPosition( );
-			if ( unitPosition.empty( ) )
-				continue;
+        float horizontalDist = std::sqrt(
+            ( unit_position.x - local_position.x ) * ( unit_position.x - local_position.x ) +
+            ( unit_position.z - local_position.z ) * ( unit_position.z - local_position.z )
+        );
 
-            vec3_t localPosition = sdk::cLocalPlayer->getLocalUnit( ).getPosition( );
+        float distanceFactor = horizontalDist / 150.0f;
+        float extraOffset = distanceFactor * 0.143f;
 
-            float horizontalDist = std::sqrt(
-                ( unitPosition.x - localPosition.x ) * ( unitPosition.x - localPosition.x ) +
-                ( unitPosition.z - localPosition.z ) * ( unitPosition.z - localPosition.z )
-            );
+        unit_position.y += 1.0f + extraOffset;
 
-            float distanceFactor = horizontalDist / 150.0f;
-            float extraOffset = distanceFactor * 0.143f;
+        GetBallisticsInfo( );
 
-            unitPosition.y += 1.0f + extraOffset;
+        // Get target velocity (you'll need to implement this)
+        vec3_t targetVelocity = unit.get_movement_ground( ).velocity( ); // Implement this method
 
-            int distance = localPosition.dist_to( unitPosition );
-            if ( distance >= 2000 )
-                continue;
-
-            GetBallisticsInfo( );
-
-            // Get target velocity (you'll need to implement this)
-            vec3_t targetVelocity = unit.get_movement_air( ).velocity( ); // Implement this method
-
-            // Calculate predicted intercept point
-            vec3_t aimPoint;
-            if ( targetVelocity.length() > 0.1f ) {
-                // Moving target - use full prediction
-                aimPoint = pred.PredictInterceptPoint(localPosition, unitPosition, targetVelocity, ballisticsData);
-            }
-            else 
-                aimPoint = pred.GetAimPoint(localPosition, unitPosition, ballisticsData);
-            
-
-            vec2_t screen;
-            if ( !g_render->world_to_screen( aimPoint, screen, camera_matrix ) )
-                continue;
-
-            g_render->rect( screen.x - 2, screen.y - 2, 4, 4, IM_COL32( 255, 255, 0, 150 ), 4.0f );
-
-            vec2_t unitScreen;
-            if ( g_render->world_to_screen( unitPosition, unitScreen, camera_matrix ) )
-                g_render->line( unitScreen.x, unitScreen.y, screen.x, screen.y, IM_COL32( 255, 0, 0, 200 ), 2.0f );
-            
+        // Calculate predicted intercept point
+        vec3_t aimPoint;
+        if ( targetVelocity.length() > 0.1f ) {
+            // Moving target - use full prediction
+            aimPoint = pred.PredictInterceptPoint( local_position, unit_position, targetVelocity, ballisticsData );
         }
+        else 
+            aimPoint = pred.GetAimPoint( local_position, unit_position, ballisticsData );
+            
+        vec2_t screen;
+        if ( !g_render->world_to_screen( aimPoint, screen, camera_matrix ) )
+            return;
+
+        g_render->rect( screen.x - 2, screen.y - 2, 4, 4, IM_COL32( 255, 255, 0, 150 ), 4.0f );
+
+        vec2_t unitScreen;
+        if ( g_render->world_to_screen( unit_position, unitScreen, camera_matrix ) )
+            g_render->line( unitScreen.x, unitScreen.y, screen.x, screen.y, IM_COL32( 255, 0, 0, 200 ), 2.0f );
+            
+        
     }
 }

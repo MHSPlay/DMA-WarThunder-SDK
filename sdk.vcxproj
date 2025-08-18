@@ -158,6 +158,7 @@
     <ClInclude Include="src\game\classes\camera.hpp" />
     <ClInclude Include="src\game\classes\entity.hpp" />
     <ClInclude Include="src\game\classes\game.hpp" />
+    <ClInclude Include="src\game\classes\info.hpp" />
     <ClInclude Include="src\game\classes\movement.hpp" />
     <ClInclude Include="src\game\classes\units.hpp" />
     <ClInclude Include="src\game\datatypes\matrix.hpp" />

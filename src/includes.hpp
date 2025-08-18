@@ -13,6 +13,7 @@
 #include <memory>
 #include <sstream>
 #include <unordered_map>
+#include <unordered_set>
 #include <iostream>
 #include <fstream>
 #include <iomanip>

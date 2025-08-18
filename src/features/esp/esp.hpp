@@ -36,36 +36,31 @@ namespace esp
         g_render->line( corners[ 3 ].x, corners[ 3 ].y, corners[ 7 ].x, corners[ 7 ].y, color, thickness );
     }
 
-    inline void draw_crosshair() {
-        static float centerX = GetSystemMetrics(SM_CXSCREEN) / 2.0f;
-        static float centerY = GetSystemMetrics(SM_CYSCREEN) / 2.0f;
+    inline void draw_crosshair( ) {
+        static float centerX = sdk::screen_width / 2.0f;
+        static float centerY = sdk::screen_height / 2.0f;
 
-        ImU32 color = IM_COL32(0, 255, 0, 255);
-        ImU32 outline = IM_COL32(0, 0, 0, 255);
+        ImU32 color = IM_COL32( 0, 255, 0, 255 );
 
         int size = 10;
         int gap = 1;
         float thickness = 1.0f;
         float outlineThickness = 3.0f;
 
-        g_render->line(centerX - size, centerY, centerX - gap, centerY, outline, outlineThickness);
-        g_render->line(centerX + gap, centerY, centerX + size, centerY, outline, outlineThickness);
-        g_render->line(centerX, centerY - size, centerX, centerY - gap, outline, outlineThickness);
-        g_render->line(centerX, centerY + gap, centerX, centerY + size, outline, outlineThickness);
-
-        g_render->line(centerX - size, centerY, centerX - gap, centerY, color, thickness);
-        g_render->line(centerX + gap, centerY, centerX + size, centerY, color, thickness);
-        g_render->line(centerX, centerY - size, centerX, centerY - gap, color, thickness);
-        g_render->line(centerX, centerY + gap, centerX, centerY + size, color, thickness);
+        g_render->line( centerX - size, centerY, centerX - gap, centerY, color, thickness );
+        g_render->line( centerX + gap, centerY, centerX + size, centerY, color, thickness );
+        g_render->line( centerX, centerY - size, centerX, centerY - gap, color, thickness );
+        g_render->line( centerX, centerY + gap, centerX, centerY + size, color, thickness );
     }
 
-	inline auto run( ) -> void 
+    inline auto run( ) -> void 
 	{
         // once
         const auto camera_matrix = sdk::cGame->camera->getCameraMatrix( );
 
         draw_crosshair( );
 
+        // iter once player
         std::vector< c_unit > units = misc::unitsList;
 		for ( c_unit& unit : units )
 		{
@@ -77,7 +72,8 @@ namespace esp
 			if ( !g_render->world_to_screen( unit_position, screen_position, camera_matrix ) )
 				continue;
 
-            const int distance = static_cast< int >( sdk::cLocalPlayer->getLocalUnit( ).getPosition( ).dist_to( unit_position ) );
+            const vec3_t local_position = sdk::cLocalPlayer->getLocalUnit( ).getPosition( );
+            const int distance = static_cast< int >( local_position.dist_to( unit_position ) );
             if ( distance >= 1400 )
                 continue;
 
@@ -126,9 +122,12 @@ namespace esp
 
                 g_render->text( text_position, IM_COL32( 255, 255, 255, 255 ), 0, distance_text, g_render->fonts( ).m_esp );
 
-                const uint8_t reload_time = unit.getReloadTime( );
+                uint8_t reload_time = unit.getReloadTime( );
                 char reload_text[ 16 ];
-                snprintf( reload_text, sizeof( reload_text ), "%.1fs", static_cast< int >( reload_time ) );
+                constexpr float stat = ( 10.f / 16 );
+                float progress = stat * reload_time * 0.1f;
+
+                snprintf( reload_text, sizeof( reload_text ), "%.1fs", /*static_cast< int >*/( progress ) );
 
                 const vec2_t reload_pos = {
                     screen_position.x,
@@ -138,11 +137,13 @@ namespace esp
                 g_render->text( reload_pos, IM_COL32( 0, 200, 255, 255 ), 0, reload_text, g_render->fonts( ).m_esp );
             }
 
+            aimbot::run( unit, unit_position, local_position, camera_matrix );
+
 		}
 
-        // aimbot
-        aimbot::run( camera_matrix );
 
 	}
+
+
 
 }

@@ -2,7 +2,6 @@
 
 namespace misc
 {
-	constexpr size_t INITIAL_UNITS_CAPACITY = 64;
 	inline std::vector< c_unit > unitsList;
 
 	inline auto is_valid_enemy( c_unit unit ) -> bool

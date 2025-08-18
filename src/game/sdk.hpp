@@ -16,6 +16,7 @@
 #include "classes\camera.hpp"
 #include "classes\game.hpp"
 #include "classes\movement.hpp"
+#include "classes\info.hpp"
 #include "classes\units.hpp"
 #include "classes\entity.hpp"
 
@@ -31,6 +32,9 @@ enum GuiState : std::uint8_t {
 
 namespace sdk
 {
+	inline int screen_width = GetSystemMetrics( SM_CXSCREEN );
+	inline int screen_height = GetSystemMetrics( SM_CYSCREEN );
+
 	inline c_game* cGame = new c_game;
 	inline c_entity* cLocalPlayer = new c_entity;
 

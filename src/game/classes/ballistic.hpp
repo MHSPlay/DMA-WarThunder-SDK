@@ -25,6 +25,10 @@ public:
 		return TargetProcess->Read< float >( this->base_address + offsets::cgame_offsets::ballistic_offsets::length );
 	}
 
+	auto getImpactPoint( ) -> vec3_t {
+		return TargetProcess->Read< vec3_t >( this->base_address + offsets::cgame_offsets::ballistic_offsets::bullet_impact_point );
+	}
+
 	auto getMaxDistance( ) -> float {
 		return TargetProcess->Read< float >( this->base_address + offsets::cgame_offsets::ballistic_offsets::max_dist );
 	}
