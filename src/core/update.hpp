@@ -70,15 +70,15 @@ namespace update
             // version
             outFile << version << std::endl;
             
-            // c_game - works
+            // c_game
             auto c_game = TargetProcess->FindSignature( "90 96 e8 ? ? ? ? 00 40", baseAddr, baseAddr + baseSize );
             if ( c_game < 0x100000 )
                 outFile << "get c_game failed!" << std::endl;
             else
                 outFile << "c_game: 0x" << std::hex << c_game - baseAddr << std::dec << std::endl;
 
-            // c_local - get correctly in hangar
-            auto c_local = TargetProcess->FindSignature( "d0 9e ? ? ? ? 00 00 00 00 00 00 00 00 00 00 00 00", baseAddr, baseAddr + baseSize );
+            // c_local
+            auto c_local = TargetProcess->FindSignature( "E0 ? 7F ? C0 01 ? 00 00", baseAddr, baseAddr + baseSize );
             if ( c_local < 0x100000 )
                 outFile << "get c_local failed!" << std::endl;
             else
