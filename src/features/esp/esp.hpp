@@ -96,24 +96,38 @@ namespace esp
             }
 
             float box_bottom_y = 0.0f;
+            float box_top_y = 0.0f;
             float box_right_x = 0.0f;
+            
             if ( all_corners_visible ) 
             {
                 draw_wireframe_box( screen_corners, IM_COL32( 255, 0, 0, 255 ), 1.0f);
 
                 box_bottom_y = screen_corners[ 0 ].y;
-                box_right_x = screen_corners[0].x;
+                box_top_y = screen_corners[ 0 ].y;
+                box_right_x = screen_corners[ 0 ].x;
+                
                 for ( size_t i = 1; i < screen_corners.size( ); ++i ) 
                 {
-                    box_bottom_y = max( box_bottom_y, screen_corners[ i ].y );
-                    box_right_x = max( box_right_x, screen_corners[ i ].x );
+                    box_bottom_y    = max( box_bottom_y, screen_corners[ i ].y );
+                    box_top_y       = min( box_top_y, screen_corners[ i ].y );
+                    box_right_x     = max( box_right_x, screen_corners[ i ].x );
                 }
 
+                const std::string vehicle_name = unit.getInfo( ).getVehicleName( );
+                if ( !vehicle_name.empty( ) )
+                {
+                    const vec2_t name_position = {
+                        screen_position.x,
+                        box_bottom_y + 35.0f
+                    };
+
+                    g_render->text( name_position, IM_COL32( 255, 255, 0, 255 ), 0, vehicle_name, g_render->fonts( ).m_esp );
+                }
             }
 
             if ( box_bottom_y > 0.0f ) 
             {
-
                 char distance_text[ 16 ];
                 snprintf( distance_text, sizeof( distance_text ), "%dm", distance );
 
@@ -152,10 +166,5 @@ namespace esp
             aimbot::run( unit, unit_position, local_position, camera_matrix );
 
 		}
-
-
 	}
-
-
-
 }

@@ -6,8 +6,14 @@ public:
 
 public:
 
+	auto getVehicleName( ) -> std::string {
+		uintptr_t addr = TargetProcess->Read< uintptr_t >( this->base_address + 0x28 );
+		return TargetProcess->ReadString( addr );
+	}
+
 	auto getUnitType( ) -> std::string {
-		return TargetProcess->ReadString( this->base_address + 0x38 ); // todo: fix
+		uintptr_t addr = TargetProcess->Read< uintptr_t >( this->base_address + 0x38 );
+		return TargetProcess->ReadString( addr );
 	}
 
 	bool isPlane( ) {
