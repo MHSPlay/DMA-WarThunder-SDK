@@ -3,13 +3,13 @@
 namespace core 
 {
 
-	inline auto Thread( ) 
+	inline auto Thread( ) -> bool
 	{
 
         if ( !TargetProcess->Init( "aces.exe" ) )
         {
             LOG( "Failed to initialize process.\n" );
-            return FALSE;
+            return false;
         }
 
         baseAddr = TargetProcess->GetBaseAddress( "aces.exe" );
@@ -18,13 +18,15 @@ namespace core
         if ( !update::run( ) )
         {
             LOG( "Failed to update sdk.\n" );
-            return FALSE;
+            return false;
         }
+
+        update::parse_offsets( );
 
         if ( !sdk::init( ) )
         {
             LOG( "Failed to initialize sdk.\n" );
-            return FALSE;
+            return false;
         }
 
 		std::thread( [ & ]( ) 
@@ -39,7 +41,8 @@ namespace core
             }
 
         }).detach( );
-	
+	    
+        return true;
 	}
 
 }

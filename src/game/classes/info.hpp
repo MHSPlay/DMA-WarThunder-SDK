@@ -7,7 +7,7 @@ public:
 public:
 
 	auto getUnitType( ) -> std::string {
-		return TargetProcess->ReadString( this->base_address + 0x38 );
+		return TargetProcess->ReadString( this->base_address + 0x38 ); // todo: fix
 	}
 
 	bool isPlane( ) {

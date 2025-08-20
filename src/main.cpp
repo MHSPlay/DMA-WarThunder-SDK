@@ -88,7 +88,8 @@ int main( int, char** )
     g_render->init( );
 
     // hack init
-    core::Thread();
+    if ( !core::Thread( ) )
+        return FALSE;
 
     // Main loop
     bool done = false;

@@ -55,20 +55,6 @@ namespace esp
 
     inline auto run( ) -> void 
 	{
-
-        // Bomb Impact ESP
-// ================= Bomb Impact ESP ==================
-        {
-            vec3_t bombImpact = sdk::cGame->ballistics->getBombImpactPoint();
-            const auto camera_matrix = sdk::cGame->camera->getCameraMatrix();
-            vec2_t sc;
-            if (g_render->world_to_screen(bombImpact, sc, camera_matrix)) {
-                g_render->circle(sc.x, sc.y, 6.0f, IM_COL32(255, 0, 200, 255), 2.0f);
-            }
-        }
-        // =====================================================
-
-
         const auto camera_matrix = sdk::cGame->camera->getCameraMatrix( );
 
         draw_crosshair( );
@@ -151,6 +137,16 @@ namespace esp
                 };
             
                 g_render->text( reload_pos, IM_COL32( 0, 200, 255, 255 ), 0, reload_text, g_render->fonts( ).m_esp );
+            }
+
+            // bomb
+            if ( sdk::cLocalPlayer->getLocalUnit( ).getInfo( ).isPlane( ) ) 
+            {
+                vec3_t bombImpact = sdk::cGame->ballistics->getBombImpactPoint( );
+
+                if ( g_render->world_to_screen( bombImpact, screen_position, camera_matrix ) )
+                    g_render->circle( screen_position.x, screen_position.y, 6.0f, IM_COL32( 255, 0, 200, 255 ), 16.0f );
+            
             }
 
             aimbot::run( unit, unit_position, local_position, camera_matrix );
