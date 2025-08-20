@@ -33,6 +33,11 @@ public:
 		return TargetProcess->Read< float >( this->base_address + offsets::cgame_offsets::ballistic_offsets::max_dist );
 	}
 
+	auto getBombImpactPoint() -> vec3_t {
+		return TargetProcess->Read< vec3_t >(this->base_address + offsets::cgame_offsets::ballistic_offsets::bomb_impact_point);
+	}
+
+
 private:
 	uintptr_t base_address;
 };

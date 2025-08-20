@@ -55,6 +55,20 @@ namespace esp
 
     inline auto run( ) -> void 
 	{
+
+        // Bomb Impact ESP
+// ================= Bomb Impact ESP ==================
+        {
+            vec3_t bombImpact = sdk::cGame->ballistics->getBombImpactPoint();
+            const auto camera_matrix = sdk::cGame->camera->getCameraMatrix();
+            vec2_t sc;
+            if (g_render->world_to_screen(bombImpact, sc, camera_matrix)) {
+                g_render->circle(sc.x, sc.y, 6.0f, IM_COL32(255, 0, 200, 255), 2.0f);
+            }
+        }
+        // =====================================================
+
+
         const auto camera_matrix = sdk::cGame->camera->getCameraMatrix( );
 
         draw_crosshair( );
