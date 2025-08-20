@@ -3,7 +3,7 @@
 class c_entity {
 public:
 	auto init( ) -> bool {
-		this->base_address = OFFSETS( uintptr_t, baseAddr + offsets::localplayer_offset )/* TargetProcess->Read< uintptr_t >( baseAddr + offsets::localplayer_offset );*/
+		this->base_address = TargetProcess->Read< uintptr_t >( baseAddr + offsets::localplayer_offset );
 		return this->base_address != 0;
 	}
 

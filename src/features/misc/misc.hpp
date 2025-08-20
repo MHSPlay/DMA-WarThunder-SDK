@@ -20,11 +20,14 @@ namespace misc
 	{
 		std::vector< c_unit > temp_units;
 
-		VMMDLL_SCATTER_HANDLE hScatter = TargetProcess->CreateScatterHandle( );
-		if ( !hScatter )
-			return;
+		// Our local is updated every game.
+		sdk::cLocalPlayer->init( );
 
 		if ( sdk::cLocalPlayer->getGuiState( ) != GuiState::ALIVE && sdk::cLocalPlayer->getGuiState( ) != GuiState::SPEC )
+			return;
+
+		VMMDLL_SCATTER_HANDLE hScatter = TargetProcess->CreateScatterHandle( );
+		if ( !hScatter )
 			return;
 
 		const int unit_count = sdk::cGame->getUnitCount( );
