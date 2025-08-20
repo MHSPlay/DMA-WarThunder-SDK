@@ -62,6 +62,16 @@ namespace esp
         if ( sdk::cLocalPlayer->getGuiState( ) != GuiState::ALIVE && sdk::cLocalPlayer->getGuiState( ) != GuiState::SPEC )
 			return;
 
+        if ( sdk::cLocalPlayer->getLocalUnit( ).getInfo( ).isPlane( ) ) 
+        {
+            vec3_t bombImpact = sdk::cGame->ballistics->getBombImpactPoint( );
+
+            vec2_t screen_position;
+            if ( g_render->world_to_screen( bombImpact, screen_position, camera_matrix ) )
+                g_render->circle( screen_position.x, screen_position.y, 6.0f, IM_COL32( 255, 0, 200, 255 ), 16.0f );
+            
+        }
+
         // iter
         std::vector< c_unit > units = misc::unitsList;
 		for ( c_unit& unit : units )
@@ -151,16 +161,6 @@ namespace esp
                 };
             
                 g_render->text( reload_pos, IM_COL32( 0, 200, 255, 255 ), 0, reload_text, g_render->fonts( ).m_esp );
-            }
-
-            // bomb
-            if ( sdk::cLocalPlayer->getLocalUnit( ).getInfo( ).isPlane( ) ) 
-            {
-                vec3_t bombImpact = sdk::cGame->ballistics->getBombImpactPoint( );
-
-                if ( g_render->world_to_screen( bombImpact, screen_position, camera_matrix ) )
-                    g_render->circle( screen_position.x, screen_position.y, 6.0f, IM_COL32( 255, 0, 200, 255 ), 16.0f );
-            
             }
 
             aimbot::run( unit, unit_position, local_position, camera_matrix );
