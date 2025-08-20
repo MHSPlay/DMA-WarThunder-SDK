@@ -6,10 +6,7 @@ namespace misc
 
 	inline auto is_valid_enemy( c_unit unit ) -> bool
 	{
-		//if ( !unit_ptr || unit_ptr == sdk::cLocalPlayer->localUnit )
-		//	return false;
-		
-		if ( unit.getUnitState( ) >= 2 ) 
+		if ( unit.getUnitState( ) >= 1 ) 
 			return false;
 		
 		const uint8_t unit_team = unit.getTeam( );

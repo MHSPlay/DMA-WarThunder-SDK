@@ -4,12 +4,6 @@ class c_movement_ground;
 
 class c_unit {
 public:
-	enum UnitState : std::uint8_t {
-		ALIVE = 0,
-		DEAD = 2,
-	};
-
-public:
 
 	auto get_base( ) -> uintptr_t {
 		return this->base_address;

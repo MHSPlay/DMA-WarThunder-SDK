@@ -259,6 +259,10 @@ namespace aimbot
     };
 
     inline auto run( c_unit& unit, vec3_t unit_position, vec3_t local_position, ViewMatrix_t camera_matrix ) -> void {
+
+        if ( sdk::cLocalPlayer->getGuiState( ) != GuiState::ALIVE )
+			return;
+
         static BallisticsPrediction pred;
 
         float horizontalDist = std::sqrt(

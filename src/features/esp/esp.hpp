@@ -55,12 +55,14 @@ namespace esp
 
     inline auto run( ) -> void 
 	{
-        // once
         const auto camera_matrix = sdk::cGame->camera->getCameraMatrix( );
 
         draw_crosshair( );
 
-        // iter once player
+        if ( sdk::cLocalPlayer->getGuiState( ) != GuiState::ALIVE && sdk::cLocalPlayer->getGuiState( ) != GuiState::SPEC )
+			return;
+
+        // iter
         std::vector< c_unit > units = misc::unitsList;
 		for ( c_unit& unit : units )
 		{
@@ -127,7 +129,7 @@ namespace esp
                 constexpr float stat = ( 10.f / 16 );
                 float progress = stat * reload_time * 0.1f;
 
-                snprintf( reload_text, sizeof( reload_text ), "%.1fs", /*static_cast< int >*/( progress ) );
+                snprintf( reload_text, sizeof( reload_text ), "%.1fs", progress );
 
                 const vec2_t reload_pos = {
                     screen_position.x,
