@@ -150,6 +150,8 @@
     <ClInclude Include="lib\imgui\imstb_rectpack.h" />
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\core\update.hpp" />
+    <ClInclude Include="src\core\config.hpp" />
     <ClInclude Include="src\core\core.hpp" />
     <ClInclude Include="src\features\aimbot\aimbot.hpp" />
     <ClInclude Include="src\features\esp\esp.hpp" />

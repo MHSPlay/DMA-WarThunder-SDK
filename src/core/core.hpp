@@ -15,6 +15,12 @@ namespace core
         baseAddr = TargetProcess->GetBaseAddress( "aces.exe" );
         baseSize = TargetProcess->GetBaseSize( "aces.exe" );
 
+        if ( !update::run( ) )
+        {
+            LOG( "Failed to update sdk.\n" );
+            return FALSE;
+        }
+
         if ( !sdk::init( ) )
         {
             LOG( "Failed to initialize sdk.\n" );

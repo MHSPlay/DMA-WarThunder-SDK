@@ -47,6 +47,8 @@ inline uint64_t baseSize = 0x0;
 
 #include "features\features.hpp"
 
+#include "core\update.hpp"
+
 #include "core\core.hpp"
 
 #include "gui\menu.hpp"
