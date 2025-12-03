@@ -1,3 +1,4 @@
+![showcase](https://github.com/MHSPlay/DMA-WarThunder-SDK/blob/main/image.png)
 # DMA-WarThunder-SDK
 
 This repository contains an SDK for interacting with War Thunder using Direct Memory Access (DMA).
