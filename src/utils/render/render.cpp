@@ -68,7 +68,7 @@ void c_render::text( const vec2_t& txt_pos, ImU32 color, const int flags, const 
 
 }
 
-bool c_render::world_to_screen( const vec3_t& in, vec2_t& out, const ViewMatrix_t& matrix ) {
+bool c_render::world_to_screen( const vec3_t& in, vec2_t& out, const matrix4x4_t& matrix ) {
     const float w = matrix[ 0 ][ 3 ] * in.x + matrix[ 1 ][ 3 ] * in.y + matrix[ 2 ][ 3 ] * in.z + matrix[ 3 ][ 3 ];
  
     if ( w < 0.001f )

@@ -8,7 +8,7 @@ public:
     void line( float x1, float y1, float x2, float y2, ImU32 clr, float thickness = 1.0f ) const;
     void rect( float x, float y, float w, float h, ImU32 clr, float rounding = 0.0f ) const;
     void filled_rect( float x, float y, float w, float h, ImU32 color, float rounding, int flags ) const;
-    static bool world_to_screen( const vec3_t& in, vec2_t& out, const ViewMatrix_t& matrix );
+    static bool world_to_screen( const vec3_t& in, vec2_t& out, const matrix4x4_t& matrix );
     void filled_rect_gradient( float x, float y, float w, float h, ImU32 col_upr_left, ImU32 col_upr_right,
                                ImU32 col_bot_right, ImU32 col_bot_left ) const;
     void triangle( float x1, float y1, float x2, float y2, float x3, float y3, ImU32 clr, float thickness ) const;

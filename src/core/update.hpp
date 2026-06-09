@@ -71,14 +71,14 @@ namespace update
             outFile << version << std::endl;
             
             // c_game
-            auto c_game = TargetProcess->FindSignature( "90 96 e8 ? ? ? ? 00 40", baseAddr, baseAddr + baseSize );
+            auto c_game = TargetProcess->FindSignature( "48 8b 05 ? ? ? ? f2 0f 10 4f", baseAddr, baseAddr + baseSize );
             if ( c_game < 0x100000 )
                 outFile << "get c_game failed!" << std::endl;
             else
                 outFile << "c_game: 0x" << std::hex << c_game - baseAddr << std::dec << std::endl;
 
             // c_local
-            auto c_local = TargetProcess->FindSignature( "E0 ? 7F ? C0 01 ? 00 00", baseAddr, baseAddr + baseSize );
+            auto c_local = TargetProcess->FindSignature( "48 39 0d ? ? ? ? 75 ? 48 c7 05", baseAddr, baseAddr + baseSize );
             if ( c_local < 0x100000 )
                 outFile << "get c_local failed!" << std::endl;
             else

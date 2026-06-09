@@ -258,7 +258,7 @@ namespace aimbot
         }
     };
 
-    inline auto run( c_unit& unit, vec3_t unit_position, vec3_t local_position, ViewMatrix_t camera_matrix ) -> void {
+    inline auto run( c_unit& unit, vec3_t unit_position, vec3_t local_position, matrix4x4_t camera_matrix ) -> void {
 
         if ( sdk::cLocalPlayer->getGuiState( ) != GuiState::ALIVE )
 			return;
@@ -273,7 +273,7 @@ namespace aimbot
         float distanceFactor = horizontalDist / 150.0f;
         float extraOffset = distanceFactor * 0.143f;
 
-        unit_position.y += 1.0f + extraOffset;
+        unit_position.y += 1.2f + extraOffset;
 
         GetBallisticsInfo( );
 

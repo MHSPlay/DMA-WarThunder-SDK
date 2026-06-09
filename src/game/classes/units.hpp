@@ -14,11 +14,15 @@ public:
 public:
 
 	auto getBBMax( ) -> vec3_t {
-		return TargetProcess->Read< vec3_t >( this->base_address + 0x022C );
+		return TargetProcess->Read< vec3_t >( this->base_address + offsets::unit_offsets::bbmax_offset );
 	}
 
 	auto getBBMin( ) -> vec3_t {
-		return TargetProcess->Read< vec3_t >( this->base_address + 0x0220 );
+		return TargetProcess->Read< vec3_t >( this->base_address + offsets::unit_offsets::bbmin_offset );
+	}
+
+	auto getMatrixRotation() -> matrix3x4_t {
+		return TargetProcess->Read< matrix3x4_t >( this->base_address + offsets::unit_offsets::rotation_matrix_offset );
 	}
 
 	auto get_movement_ground( ) -> c_movement_ground {
@@ -32,7 +36,7 @@ public:
 	}
 
 	auto getPosition( ) -> vec3_t {
-		return TargetProcess->Read< vec3_t >( this->base_address + 0xAE8 );
+		return TargetProcess->Read< vec3_t >( this->base_address + offsets::unit_offsets::position_offset );
 	}
 
 	auto getInfo( ) -> c_info {
@@ -49,7 +53,7 @@ public:
 	}
 
 	auto getTeam( ) -> uint8_t {
-		return TargetProcess->Read< uint8_t >( this->base_address + 0x0DB0 ); // unitArmyNo
+		return TargetProcess->Read< uint8_t >( this->base_address + offsets::unit_offsets::unitArmyNo_offset );
 	}
 
 	auto getReloadTime( ) -> uint8_t {

@@ -2,21 +2,40 @@
 
 namespace esp 
 {
-
-    inline std::array< vec3_t, 8 > calculate_bbox_corners( const vec3_t& position, const vec3_t& bbmin, const vec3_t& bbmax ) 
+    inline std::array< vec3_t, 8 > calculate_bbox_corners( const vec3_t& position, const vec3_t& bbmin, const vec3_t& bbmax, const matrix3x4_t& rot )
     {
-        return 
-        { {
-            { position.x + bbmin.x, position.y + bbmin.y, position.z + bbmin.z }, // 0
-            { position.x + bbmax.x, position.y + bbmin.y, position.z + bbmin.z }, // 1
-            { position.x + bbmin.x, position.y + bbmax.y, position.z + bbmin.z }, // 2
-            { position.x + bbmax.x, position.y + bbmax.y, position.z + bbmin.z }, // 3
-            { position.x + bbmin.x, position.y + bbmin.y, position.z + bbmax.z }, // 4
-            { position.x + bbmax.x, position.y + bbmin.y, position.z + bbmax.z }, // 5
-            { position.x + bbmin.x, position.y + bbmax.y, position.z + bbmax.z }, // 6
-            { position.x + bbmax.x, position.y + bbmax.y, position.z + bbmax.z }  // 7
+        const auto r = rot.right;
+        const auto f = rot.forward;
+        const auto u = rot.up;
+
+        // only 18 multipl
+        const vec3_t rx0 = { r.x * bbmin.x, r.y * bbmin.x, r.z * bbmin.x };
+        const vec3_t rx1 = { r.x * bbmax.x, r.y * bbmax.x, r.z * bbmax.x };
+        const vec3_t fy0 = { f.x * bbmin.y, f.y * bbmin.y, f.z * bbmin.y };
+        const vec3_t fy1 = { f.x * bbmax.y, f.y * bbmax.y, f.z * bbmax.y };
+        const vec3_t uz0 = { u.x * bbmin.z, u.y * bbmin.z, u.z * bbmin.z };
+        const vec3_t uz1 = { u.x * bbmax.z, u.y * bbmax.z, u.z * bbmax.z };
+
+        const auto make = [ & ]( const vec3_t& rx, const vec3_t& fy, const vec3_t& uz ) -> vec3_t {
+            return {
+                position.x + rx.x + fy.x + uz.x,
+                position.y + rx.y + fy.y + uz.y,
+                position.z + rx.z + fy.z + uz.z
+            };
+        };
+
+        return { {
+            make( rx0, fy0, uz0 ),
+            make( rx1, fy0, uz0 ),
+            make( rx0, fy1, uz0 ),
+            make( rx1, fy1, uz0 ),
+            make( rx0, fy0, uz1 ),
+            make( rx1, fy0, uz1 ),
+            make( rx0, fy1, uz1 ),
+            make( rx1, fy1, uz1 ),
         } };
     }
+
 
     inline void draw_wireframe_box( const std::array< vec2_t, 8 >& corners, ImU32 color, float thickness ) {
 
@@ -91,7 +110,8 @@ namespace esp
 
             const vec3_t bbmin = unit.getBBMin( );
             const vec3_t bbmax = unit.getBBMax( );
-            const auto world_corners = calculate_bbox_corners( unit_position, bbmin, bbmax );
+            const matrix3x4_t rotation = unit.getMatrixRotation( );
+            const auto world_corners = calculate_bbox_corners( unit_position, bbmin, bbmax, rotation );
 
             std::array< vec2_t, 8 > screen_corners;
             bool all_corners_visible = true;

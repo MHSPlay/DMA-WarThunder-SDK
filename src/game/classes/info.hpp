@@ -12,7 +12,7 @@ public:
 	}
 
 	auto getUnitType( ) -> std::string {
-		uintptr_t addr = TargetProcess->Read< uintptr_t >( this->base_address + 0x38 );
+		uintptr_t addr = TargetProcess->Read< uintptr_t >( this->base_address + 0x8C );
 		return TargetProcess->ReadString( addr );
 	}
 
