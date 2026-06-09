@@ -1,12 +1,11 @@
 #pragma once
 
 // https://www.unknowncheats.me/forum/4121914-post1797.html
-// 
-
 namespace offsets
 {
 	inline uintptr_t cgame_offset = 0;
 	inline uintptr_t localplayer_offset = 0;
+	inline uintptr_t view_angles = 0x6E83BB8;
 
 	namespace cgame_offsets
 	{

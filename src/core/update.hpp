@@ -77,6 +77,22 @@ namespace update
             else
                 outFile << "c_game: 0x" << std::hex << c_game - baseAddr << std::dec << std::endl;
 
+            /*
+            
+            // 48 8B 05 ? ? ? ? F2 0F 10 4F 08
+            // mov rax, [rip+disp32] -> length 7, target = instr + 7 + disp32
+            int32_t disp = TargetProcess->Read<int32_t>(c_game + 3);
+            uint64_t c_game_ptr = c_game + 7 + disp;
+            offsets::cgame_offset = c_game_ptr - baseAddr;
+            
+            // 48 39 0D ? ? ? ? 75
+            // cmp [rip+disp32], rcx -> length 7, target = instr + 7 + disp32
+            int32_t disp = TargetProcess->Read<int32_t>(c_local + 3);
+            uint64_t c_local_ptr = c_local + 7 + disp;
+            offsets::localplayer_offset = c_local_ptr - baseAddr;
+
+            */
+
             // c_local
             auto c_local = TargetProcess->FindSignature( "48 39 0d ? ? ? ? 75 ? 48 c7 05", baseAddr, baseAddr + baseSize );
             if ( c_local < 0x100000 )

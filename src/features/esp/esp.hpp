@@ -105,7 +105,7 @@ namespace esp
 
             const vec3_t local_position = sdk::cLocalPlayer->getLocalUnit( ).getPosition( );
             const int distance = static_cast< int >( local_position.dist_to( unit_position ) );
-            if ( distance >= 1400 )
+            if ( distance >= 1250 )
                 continue;
 
             const vec3_t bbmin = unit.getBBMin( );

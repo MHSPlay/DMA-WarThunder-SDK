@@ -6,9 +6,10 @@ namespace misc
 
 	inline auto is_valid_enemy( c_unit unit ) -> bool
 	{
-		if ( unit.getUnitState( ) >= 1 ) 
+		// https://www.unknowncheats.me/forum/4631229-post2807.html
+		if ( unit.getUnitState( ) >= 2 ) 
 			return false;
-		
+
 		const uint8_t unit_team = unit.getTeam( );
 		if ( unit_team == 0 || unit_team == sdk::cLocalPlayer->getLocalUnit( ).getTeam( ) )
 			return false;
@@ -22,6 +23,7 @@ namespace misc
 
 		if ( sdk::cLocalPlayer->getGuiState( ) != GuiState::ALIVE && sdk::cLocalPlayer->getGuiState( ) != GuiState::SPEC ) {
 			sdk::cLocalPlayer->init( );
+			unitsList.clear( );
 			return;
 		}
 
