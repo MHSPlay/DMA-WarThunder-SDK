@@ -271,9 +271,9 @@ namespace aimbot
         );
 
         float distanceFactor = horizontalDist / 150.0f;
-        float extraOffset = distanceFactor * 0.143f;
+        float extraOffset = distanceFactor * 0.146f;
 
-        unit_position.y += 1.2f + extraOffset;
+        unit_position.y += 1.0f + extraOffset;
 
         GetBallisticsInfo( );
 

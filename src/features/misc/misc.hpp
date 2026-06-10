@@ -21,18 +21,27 @@ namespace misc
 	{
 		std::vector< c_unit > temp_units;
 
-		if ( sdk::cLocalPlayer->getGuiState( ) != GuiState::ALIVE && sdk::cLocalPlayer->getGuiState( ) != GuiState::SPEC ) {
+		const auto gui_state = sdk::cLocalPlayer->getGuiState( );
+		if ( gui_state != GuiState::ALIVE && gui_state != GuiState::SPEC ) {
 			sdk::cLocalPlayer->init( );
 			unitsList.clear( );
 			return;
 		}
 
+		const int unit_count = sdk::cGame->getUnitCount( );
+		if ( !unit_count ) {
+			unitsList.clear( );
+			return;
+		}
+
+		const uintptr_t unit_list_base = sdk::cGame->getUnitList( );
+		if ( !unit_list_base )
+			return;
+
 		VMMDLL_SCATTER_HANDLE hScatter = TargetProcess->CreateScatterHandle( );
 		if ( !hScatter )
 			return;
 
-		const int unit_count = sdk::cGame->getUnitCount( );
-		const uintptr_t unit_list_base = sdk::cGame->getUnitList( );
 		auto scatter_unit = [ & ]( VMMDLL_SCATTER_HANDLE handle, uint32_t count ) -> std::vector< c_unit >
 		{
 			std::vector< std::uintptr_t > pointers( count );
@@ -47,7 +56,6 @@ namespace misc
 			for ( size_t i = 0; i < count; i++ )
 				result.emplace_back( c_unit( pointers.at( i ) ) );
 
-			TargetProcess->CloseScatterHandle( hScatter );
 			return result;
 		};
 
@@ -59,6 +67,7 @@ namespace misc
 
 		}
 
+		TargetProcess->CloseScatterHandle( hScatter );
 		unitsList = temp_units;
 		temp_units.clear( );
 

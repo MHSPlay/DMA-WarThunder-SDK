@@ -82,9 +82,8 @@ bool c_render::world_to_screen( const vec3_t& in, vec2_t& out, const matrix4x4_t
     float ny = y * inv;
  
     const ImVec2 size = ImGui::GetIO( ).DisplaySize;
-    out.x = ( size.x * 0.5f * nx ) + ( nx + size.x * 0.5f );
-    out.y = -( size.y * 0.5f * ny ) + ( ny + size.y * 0.5f );
- 
-    return true;
+    out.x = (nx + 1.f) * 0.5f * size.x;
+    out.y = (1.f - ny) * 0.5f * size.y;
 
+    return true;
 }

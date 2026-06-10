@@ -78,7 +78,8 @@ namespace esp
 
         draw_crosshair( );
 
-        if ( sdk::cLocalPlayer->getGuiState( ) != GuiState::ALIVE && sdk::cLocalPlayer->getGuiState( ) != GuiState::SPEC )
+        const auto gui_state = sdk::cLocalPlayer->getGuiState( );
+        if ( gui_state != GuiState::ALIVE && gui_state != GuiState::SPEC )
 			return;
 
         if ( sdk::cLocalPlayer->getLocalUnit( ).getInfo( ).isPlane( ) ) 
@@ -104,7 +105,7 @@ namespace esp
 				continue;
 
             const vec3_t local_position = sdk::cLocalPlayer->getLocalUnit( ).getPosition( );
-            const int distance = static_cast< int >( local_position.dist_to( unit_position ) );
+            const float distance = local_position.dist_to( unit_position );
             if ( distance >= 1250 )
                 continue;
 
@@ -144,22 +145,23 @@ namespace esp
                     box_right_x     = max( box_right_x, screen_corners[ i ].x );
                 }
 
-                const std::string vehicle_name = unit.getInfo( ).getVehicleName( );
-                if ( !vehicle_name.empty( ) )
-                {
-                    const vec2_t name_position = {
-                        screen_position.x,
-                        box_bottom_y + 35.0f
-                    };
+                //const std::string vehicle_name = unit.getInfo( ).getVehicleName( );
+                //if ( !vehicle_name.empty( ) )
+                //{
+                //    const vec2_t name_position = {
+                //        screen_position.x,
+                //        box_bottom_y + 35.0f
+                //    };
 
-                    g_render->text( name_position, IM_COL32( 255, 255, 0, 255 ), 0, vehicle_name, g_render->fonts( ).m_esp );
-                }
+                //    g_render->text( name_position, IM_COL32( 255, 255, 0, 255 ), 0, vehicle_name, g_render->fonts( ).m_esp );
+                //}
             }
 
-            if ( box_bottom_y > 0.0f ) 
+            /*if ( box_bottom_y > 0.0f ) 
             {
                 char distance_text[ 16 ];
-                snprintf( distance_text, sizeof( distance_text ), "%dm", distance );
+                float distance_km = distance / 1000.0f;
+                snprintf( distance_text, sizeof( distance_text ), "%.1fkm", distance );
 
                 const vec2_t text_position = {
                     screen_position.x,
@@ -181,9 +183,9 @@ namespace esp
                 };
             
                 g_render->text( reload_pos, IM_COL32( 0, 200, 255, 255 ), 0, reload_text, g_render->fonts( ).m_esp );
-            }
+            }*/
 
-            aimbot::run( unit, unit_position, local_position, camera_matrix );
+            //aimbot::run( unit, unit_position, local_position, camera_matrix );
 
 		}
 	}
